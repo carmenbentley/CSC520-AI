@@ -1,0 +1,132 @@
+To Run Program:
+
+A jar file has been included in the zip file submission. To run this program,
+navigate to the system directory in which the jar file is housed.
+
+$ java -jar AssignmentOne_cnaiken.jar <search type> <Maze File Full Pathname>
+
+example:
+
+$ java -jar AssignmentOne_cnaiken.jar BFS C:\Users\Carmella\Desktop\CSC520\TrainingMazes\12x12a-maze.txt
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+AssignmentOne.java 					- Main Class file for CSC 520, Assignment One
+
+Functions:
+(1) Main											: entry point of program
+													  Creates appropriate class objects to process file and begin search.
+													  Prints maze statistics and solution to the console.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+Maze.java                   		-   Class that represents a Maze object for purposes of searching.
+
+Functions:
+(1) Standard Getter and Setters for all Maze attributes (fileName, fullPathname, height, width, inputFile, Maze, solution, goal)
+(2) Private methods to process the maze file.
+(3) public void printMaze()                 		: prints Maze to console.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+Position.java               		-   Class that represents a Position object within a Maze.
+
+Functions:
+(1) Standard Getter and Setters for all Maze attributes (width, height, value, maze, neighbors, explored)
+(2) public String toString()               		 	: returns a string value of the Position object in form (x,y)
+(3) public boolean check(Position p)        		: returns true this Position passed to the function is a neighbor of the Position object.
+(4) public int compareTo(Position p2)       		: Comparator function that overrides the current comparison definition. Uses a
+		                                                 * heuristic to determine worth(cost) of a Position based on its placement from
+		                                                 * the maze GOAL.
+		                                                 * 
+		                                                 * h(n) = 1 if the current Position is in the same row or column as the goal
+		                                                 * Position h(n) = 2 if the current Position is in a different row or column
+		                                                 * from the goal Position NOTE: This is an admissible heuristic as it will never
+		                                                 * overestimate the number of moves(cost) from the current position to the goal
+		                                                 * position. - Same row or column --> best case we need one move to get to GOAL
+		                                                 * - Different row or column --> best case we need two moves to get to GOAL
+ (5) public void explorePosition()					: searches for valid transition state of a Position and adds these states
+ 													  to the Position's neighbor list.
+                                                 
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+StarPosition.java              		-   Child class of Position, implements/overrides a different compareTo() function to address the heuristic
+										f(n) = g(n) + h(n)
+
+														 * g(n) = actual number of hops taken from start Position to current Position
+														 * 
+														 * h(n) = 1 if the current Position is in the same row or column as the goal
+														 * Position 
+														 *
+														 * h(n) = 2 if the current Position is in a different row or column
+														 * from the goal Position
+														 *
+														 * NOTE: This is an admissible heuristic as it will never
+														 * overestimate the number of moves(cost) from the current position to the goal
+														 * position. - Same row or column --> best case we need one move to get to GOAL
+														 * - Different row or column --> best case we need two moves to get to GOAL.
+														 * The addition of g(n) will also never over estimate because the cost of the path
+														 * will most definitely include g(n).
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+BreadthFirstSearch.java     		-   Class implements a Breadth First Search Algorithm variation to determine the shortest solution for a give number maze.
+
+Functions:
+(1) public BreadthFirstSearch(Maze maze)    		: constructor, takes a Maze object and initializes the state of the search.
+(2) public ArrayList<Position> search()     		: executes a BFS algorithm variation to find the shortest path from the starting
+                                              		  Position of the maze to the goal Position. Returns the path(maze solution) to the caller.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+DepthFirstSearch.java       		-   Class implements a Depth First Search Algorithm variation to determine a solution for a give number maze.
+                                		A version of this was also used to find the number of unqiue paths for the 6x6 and 8x8 maze.
+Functions:
+(1) public DepthFirstSearch(Maze maze)     		 	: constructor, takes a Maze object and initializes the state of the search.
+(2) public ArrayList<Position> search()     		: executes an iterative DFS algorithm variation to find the a path from the starting
+                                              		  Position of the maze to the goal Position. Returns the path(maze solution) to the caller.
+(3) public int numUniquePaths()             		: entry point to finding number of unique paths in a given maze from the start Position to      
+                                              		  the goal Position. This function calls the recursive utility function that performs the search.
+                                              		  Returns the number of unique paths to the caller.
+(4) private int searchUniquePaths(Position, int, boolean[][])   : performs a recursive DFS search for all unique paths in a given maze.
+                                                                  Takes the current Position being examined in a sequence of recursive
+                                                                  calls, the count variable to track the number of unqiue paths found,
+                                                                  and a boolean matrix to track visitation during the search.
+                                                                  Returns the number of unique paths found.
+                                                                  
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+BestFirstSearch.java       -    Class implements a Best First Search Algorithm variation to determine a solution for a given number maze.
+
+Functions:
+(1) public BestFirstSearch(Maze maze)       		: constructor, takes a Maze object and initializes the state of the search.
+(2) public ArrayList<Position> search()     		: executes a BestFS algorithm variation to find the a path from the starting
+                                              		  Position of the maze to the goal Position. Returns the path(maze solution) to the caller.
+                                              		  Function relies on a heuristic value to sort the Priority Queue.
+	                                                 		* h(n) = 1 if the current Position is in the same row or column as the goal
+	                                                 		* Position h(n) = 2 if the current Position is in a different row or column
+	                                                 		* from the goal Position
+	                                             			* NOTE: This is an admissible heuristic as it will never overestimate the
+	                                              			* number of moves(cost) from the current position to the goal position. - Same
+	                                                 		* row or column --> best case we need one move to get to GOAL - Different row
+	                                                 		* or column --> best case we need two moves to get to GOAL
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+AStarSearch.java       		-    Class implements an A*(Star) Search Algorithm variation to determine a solution for a given number maze.
+
+Functions:
+(1) public AStarSearch(Maze maze)       			: constructor, takes a Maze object and initializes the state of the search.
+(2) public ArrayList<Position> search()     		: executes an A* algorithm variation to find the best path from the starting
+                                              		  Position of the maze to the goal Position. Returns the path(maze solution) to the caller.
+                                              		  Function relies on a heuristic[f(n) = g(n) + h(n)] value to sort the Priority Queue.
+	                                                 		 * g(n) = actual number of hops taken from start Position to current Position
+															 * 
+															 * h(n) = 1 if the current Position is in the same row or column as the goal
+															 * Position 
+															 *
+															 * h(n) = 2 if the current Position is in a different row or column
+															 * from the goal Position
+															 *
+															 * NOTE: This is an admissible heuristic as it will never
+															 * overestimate the number of moves(cost) from the current position to the goal
+															 * position. - Same row or column --> best case we need one move to get to GOAL
+															 * - Different row or column --> best case we need two moves to get to GOAL.
+															 * The addition of g(n) will also never over estimate because the cost of the path
+															 * will most definitely include g(n).
+
+
+                                  
